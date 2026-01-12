@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Share your Sound</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+ 
+</head>
+
+<body  class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
+    
+    <div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50"></div>
+    <div class="container mx-auto px-4 py-8">
+
+        <header class="text-center mb-10">
+
+            <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-green-400 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                🔊 SHARE YOUR SOUND
+            </h1>
+            <p class="text-gray-300 text-lg">
+                Share your music. No account needed. Disappears in 24h.
+            </p>
+        </header>
+
+        <form id="share-form" class="bg-gray-800/60 backdrop-blur-lg rounded-2xl p-8 mb-10 border border-gray-700 shadow-2xl">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center">
+                    <span class="text-xl">🎵</span>
+                </div>
+                Share a Song
+            </h2>
+    
+            <div class="space-y-6">
+                <!-- Song Title -->
+                <div>
+                    <label for="songTitle" class="block text-gray-300 mb-3 font-medium">
+                        SONG TITLE
+                    </label>
+                    <input 
+                        id="songTitle"
+                        name="songTitle"
+                        type="text"
+                        placeholder="Bohemian Rhapsody - Queen"
+                        required
+                        class="w-full px-5 py-4 bg-gray-900/70 border-2 border-gray-700 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500/30 transition text-white placeholder-gray-500"
+                    >
+                </div>
+                
+                <!-- Song URL -->
+                <div>
+                    <label for="songUrl" class="block text-gray-300 mb-3 font-medium">
+                        SONG LINK (YouTube, Spotify, SoundCloud)
+                    </label>
+                    <input 
+                        id="songUrl"
+                        name="songUrl"
+                        type="url"
+                        placeholder="https://open.spotify.com/track/..."
+                        required
+                        class="w-full px-5 py-4 bg-gray-900/70 border-2 border-gray-700 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition text-white placeholder-gray-500"
+                    >
+                    <p class="text-gray-500 text-sm mt-2">
+                        Supported: YouTube, Spotify, SoundCloud
+                    </p>
+                </div>
+                
+                <!-- Submit Button -->
+                <button 
+                    type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold rounded-xl text-lg shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                    🚀 SHARE NOW
+                </button>
+            </div>
+        </form>
+
+        <!-- Container pour les posts -->
+        <div id="posts-container" class="max-w-3xl mx-auto px-4 py-8">
+
+        </div>
+    </div>
+
+     <footer class="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <div class="max-w-2xl mx-auto">
+                <p class="text-lg font-medium text-gray-300 mb-3">🎧 Discover • Share • Vanish</p>
+                <p class="text-sm mb-4">
+                    Share any song link. Listen to community discoveries. Everything disappears after 24 hours.
+                </p>
+                <div class="flex flex-wrap justify-center gap-6 text-xs text-gray-500">
+                    <span>No registration required</span>
+                    <span>•</span>
+                    <span>Strict content moderation</span>
+                    <span>•</span>
+                    <span>Anonymous sharing</span>
+                </div>
+                <p class="text-xs text-gray-600 mt-6">
+                    Made with ❤️ by Elian Viziale for music lovers everywhere
+                </p>
+            </div>
+        </footer>
+    </div>
+    <!-- JavaScript -->
+    <script src="/app.js"></script>
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+</body>
+</html>
