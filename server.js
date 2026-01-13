@@ -183,7 +183,7 @@ function generateEmbedCode(url){
     var id = url.match(/(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/mi)
 
     return `<iframe width="100%" height="360" src="https://www.youtube.com/embed/${id[1]}?rel=0&modestbranding=1" 
-      picture-in-picture" allowfullscreen ></iframe>`;
+      allow="picture-in-picture" allowfullscreen ></iframe>`;
 
   } else if (url.includes('spotify.com')) {
 
