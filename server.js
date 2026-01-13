@@ -11,20 +11,6 @@ const db = new sqlite3.Database('./share-your-sound.db')
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
 
-// // Active les protections basiques
-// app.use(helmet({
-//     contentSecurityPolicy: {
-//         directives: {
-//             defaultSrc: ["'self'"],
-//             styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
-//             scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://open.spotify.com"],
-//             frameSrc: ["'self'", "https://www.youtube.com", "https://open.spotify.com", "https://w.soundcloud.com"],
-//             imgSrc: ["'self'", "data:", "https:"]
-//         }
-//     },
-//     crossOriginEmbedderPolicy: false // Important pour les iframes
-// }));
-
 // Limite pour les posts
 const postLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -145,32 +131,6 @@ app.post('/report/:id', reportLimiter, (req, res) => {
 });
 
 
-
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
-            scriptSrc: [
-                "'self'", 
-                "'unsafe-inline'", 
-                "https://cdn.tailwindcss.com", 
-                "https://open.spotify.com",
-                "https://embed-cdn.spotifycdn.com" // ← AJOUT
-            ],
-            frameSrc: [
-                "'self'",
-                "https://www.youtube.com",
-                "https://www.youtube-nocookie.com", // ← AJOUT
-                "https://open.spotify.com", 
-                "https://w.soundcloud.com"
-            ],
-            imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "https://*.spotify.com"] // Peut aider
-        }
-    },
-    crossOriginEmbedderPolicy: false
-}));
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Example app listening on port ${PORT}`)
