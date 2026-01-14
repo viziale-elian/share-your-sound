@@ -45,7 +45,7 @@ db.serialize(() => {
 
 // Toutes les heures à la minute 0
 cron.schedule('0 * * * *', () => {
-    db.run("DELETE FROM posts WHERE expiresAt < datetime('now')", 
+    db.run("DELETE FROM posts WHERE datetime(expiresAt) < datetime('now')", 
         (err) => {
         }
     );
@@ -88,7 +88,7 @@ app.post('/post', postLimiter, (req, res) => {
   const safeUrl = sanitizeUrl(url);
   
   // 2. Validation
-  if (!safeTitle || safeTitle.length < 2) {
+  if (!safeTitle) {
       return res.status(400).json({success : false, error: 'Invalid title' });
   }
   
@@ -120,7 +120,7 @@ app.post('/report/:id', reportLimiter, (req, res) => {
          db.run("UPDATE posts SET reports = reports + 1 WHERE rowid = ?", [id]);
         
         // 2. Supprimer CE post s'il a >10 reports
-         db.run("DELETE FROM posts WHERE rowid = ? AND reports > 10", [id]);
+        db.run("DELETE FROM posts WHERE rowid = ? AND reports > 10", [id]);
         
         res.json({success : true});
         
@@ -138,14 +138,7 @@ app.listen(PORT, '0.0.0.0', () => {
 
 function generateEmbedCode(url){
 
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-
-    var id = url.match(/(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/mi)
-
-    return `<iframe width="100%" height="360" src="https://www.youtube.com/embed/${id[1]}" 
-       ></iframe>`;
-
-  } else if (url.includes('spotify.com')) {
+  if (url.includes('spotify.com')) {
 
     var spotifyData = extractSpotifyId(url) 
 
@@ -162,7 +155,6 @@ function generateEmbedCode(url){
     // SoundCloud a son propre système d'embed
       const encodedUrl = encodeURIComponent(url);
       return `<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=${encodedUrl}"></iframe>`;
-
 
   } else {
     return `<a href='${url}'>${url}</>`
@@ -213,7 +205,7 @@ function sanitizeUrl(url) {
     url = url.trim();
     
     // Whitelist des plateformes
-    const allowedDomains = ['youtube.com', 'youtu.be', 'spotify.com', 'soundcloud.com'];
+    const allowedDomains = ['spotify.com', 'soundcloud.com'];
     
     try {
         const urlObj = new URL(url);

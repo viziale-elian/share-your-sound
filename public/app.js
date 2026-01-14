@@ -74,54 +74,36 @@ function renderPosts(posts) {
 
     if (!posts || posts.length === 0) {
         container.innerHTML = `
-            <div class="text-center py-12 bg-gray-800/30 rounded-2xl border border-dashed border-gray-700">
-                <div class="text-6xl mb-4">🎵</div>
-                <h3 class="text-xl font-bold mb-2 text-white">Aucune musique partagée</h3>
-                <p class="text-gray-400">Sois le premier à partager une musique !</p>
+            <div class="text-center py-8 sm:py-10 md:py-12 bg-gray-800/30 rounded-xl md:rounded-2xl border border-dashed border-gray-700 mx-2 sm:mx-0">
+                <div class="text-4xl sm:text-5xl md:text-6xl mb-3 md:mb-4">🎵</div>
+                <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-2 text-white">No sound shared</h3>
+                <p class="text-gray-400 text-sm sm:text-base">Be the first to share your sound !</p>
             </div>
         `;
         return;
     }
     
     container.innerHTML = posts.map(post => {
-        const isYouTube = post.songUrl.includes('youtube') || post.songUrl.includes('youtu.be');
-        const isSpotify = post.songUrl.includes('spotify');
-        const isSoundCloud = post.songUrl.includes('soundcloud');
-        
         return `
-        <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-6 mb-6 shadow-lg">
+        <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg md:rounded-xl border border-gray-700 p-4 sm:p-5 md:p-6 mb-4 sm:mb-5 md:mb-6 shadow-lg mx-2 sm:mx-0">
             
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-gray-400 text-sm">${getPostAgeTime(post.createdAt)}</span>
-                <button class="btn-report text-gray-400 hover:text-red-400 px-3 py-1 rounded-lg text-sm hover:bg-red-900/20 transition" data-id="${post.id}">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3 sm:mb-4">
+                <span class="text-gray-400 text-xs sm:text-sm">${getPostAgeTime(post.createdAt)}</span>
+                <button class="btn-report text-gray-400 hover:text-red-400 px-2 py-1 sm:px-3 sm:py-1 rounded-lg text-xs sm:text-sm hover:bg-red-900/20 transition self-end sm:self-auto" data-id="${post.id}">
                     🚩 Report
                 </button>
             </div>
             
-            <h3 class="text-2xl font-bold text-white mb-5">
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4 md:mb-5 break-words">
                 ${post.songTitle}
             </h3>
             
-            ${isYouTube ? 
-                    `<div class="relative pb-[56.25%] h-0 overflow-hidden rounded-xl">
-    ${post.embedCode} <!-- Direct, pas de div intermédiaire -->
-</div>` : 
-                isSpotify ?
-                `<div class="mb-5 w-full min-w-[500px]">
-                    ${post.embedCode}
-                </div>` :
-                
-                isSoundCloud ?
-                `<div class="mb-5 w-full min-w-[500px]">
-                    ${post.embedCode}
-                </div>` :
-                
-                `<div class="mb-5">
-                    ${post.embedCode}
-                </div>`
-            }
-            
-            <div class="border-gray-700">
+            <!-- Container responsive pour les embeds -->
+            <div class="mb-4 sm:mb-5 w-full overflow-hidden">
+                ${adaptEmbedForMobile(post.embedCode)}
+            </div> 
+             
+            <div class="border-t border-gray-700 pt-3 sm:pt-4">
                 ${generatePlatformBadge(post.songUrl)}
             </div>
             
@@ -145,17 +127,17 @@ function showMessage(text, type) {
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
-        container.className = 'fixed top-4 right-4 space-y-2 z-50';
+        container.className = 'fixed top-4 right-4 space-y-2 z-50 max-w-xs md:max-w-md';
         document.body.appendChild(container);
     }
 
-    toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${
+    toast.className = `flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-3 rounded-lg shadow-lg ${
         type === 'success' ? 'bg-green-500' :
         type === 'error' ? 'bg-red-500' : 'bg-blue-500'
     } text-white animate-fade-in`;
     
     toast.innerHTML = `
-        <span class="text-lg">${icons[type]}</span>
+        <span class="text-base sm:text-lg flex-shrink-0">${icons[type]}</span>
         <span>${text}</span>
     `;
     
@@ -169,6 +151,16 @@ function showMessage(text, type) {
     }, 3000);
 }
 
+function adaptEmbedForMobile(embedCode) {
+    // Si c'est un iframe Spotify ou SoundCloud, on ajoute des classes responsive
+    if (embedCode.includes('<iframe')) {
+        return embedCode.replace(
+            '<iframe',
+            '<iframe class="w-full min-h-[80px] sm:min-h-[152px] md:min-h-[152px] rounded-lg"'
+        );
+    }
+    return embedCode;
+}
 
 function getPostAgeTime(createdTime) {
     var minutes
@@ -185,17 +177,13 @@ function getPostAgeTime(createdTime) {
     return `Shared ${hours} hours ago`
 }
 function generatePlatformBadge(url) {
-    console.log(url)
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        return '<span class="bg-red-600/20 text-red-300 px-3 py-1 rounded-full text-xs">YouTube</span>';
-    } 
     if (url.includes('spotify.com')) {
-        return '<span class="bg-green-600/20 text-green-300 px-3 py-1 rounded-full text-xs">Spotify</span>';
+        return '<span class="bg-green-600/20 text-green-300 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs">Spotify</span>';
     } 
     if (url.includes('soundcloud.com')) {
-        return '<span class="bg-orange-600/20 text-orange-300 px-3 py-1 rounded-full text-xs">SoundCloud</span>';
+        return '<span class="bg-orange-600/20 text-orange-300 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs">SoundCloud</span>';
     } 
-    return '<span class="bg-gray-600/20 text-gray-300 px-3 py-1 rounded-full text-xs">Other</span>';
+    return '<span class="bg-gray-600/20 text-gray-300 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs">Other</span>';
     
 }
 
